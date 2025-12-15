@@ -1,0 +1,4 @@
+express
+dotenv
+openai
+node-fetch

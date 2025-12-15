@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic AI Chat</title>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0f172a;        /* slate-900 */
+      --card: #020617;      /* slate-950 */
+      --primary: #38bdf8;   /* sky-400 */
+      --text: #e5e7eb;      /* gray-200 */
+      --muted: #94a3b8;     /* slate-400 */
+      --border: #1e293b;    /* slate-800 */
+      --success: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #020617, var(--bg));
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      background: linear-gradient(180deg, #020617, #020617cc);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      overflow: hidden;
+    }
+
+    header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    header span {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .content {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      padding: 14px 16px;
+      background: #020617;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(56,189,248,0.2);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary), #0ea5e9);
+      color: #020617;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s;
+      box-shadow: 0 8px 20px rgba(56,189,248,0.35);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(56,189,248,0.45);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .status {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .output {
+      background: #020617;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .thinking {
+      color: var(--primary);
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 14px 24px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer strong {
+      color: var(--primary);
+    }
+
+    /* Scrollbar */
+    .output::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .output::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 999px;
+    }
+
+    .output::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Agentic AI Chat</h1>
+        <span>MAPRA-node • Research Assistant</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <label for="input">Ask your question</label>
+      <textarea id="input" placeholder="Ask about algorithms, system design, agentic AI, etc..."></textarea>
+
+      <div class="actions">
+        <div class="status" id="status">Idle</div>
+        <button id="sendBtn" onclick="send()">Send</button>
+      </div>
+
+      <label>Response</label>
+      <div class="output" id="output">Your response will appear here.</div>
+    </div>
+
+    <footer>
+      Built with <strong>Node.js</strong>, <strong>Agents</strong> & ❤️
+    </footer>
+  </div>
+
+  <script>
+    async function send() {
+      const input = document.getElementById("input");
+      const output = document.getElementById("output");
+      const status = document.getElementById("status");
+      const btn = document.getElementById("sendBtn");
+
+      if (!input.value.trim()) return;
+
+      btn.disabled = true;
+      status.textContent = "Thinking...";
+      output.innerHTML = '<span class="thinking">Thinking...</span>';
+
+      try {
+        const res = await fetch("/api/agent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: input.value })
+        });
+
+        const data = await res.json();
+        output.textContent = data.result ?? "No response";
+        status.textContent = "Done";
+      } catch (err) {
+        output.textContent = "Error: " + err.message;
+        status.textContent = "Error";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
