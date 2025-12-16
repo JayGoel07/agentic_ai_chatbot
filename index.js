@@ -35,6 +35,11 @@ app.post("/api/agent", async(req,res) => {
 });
 
 const port = process.env.PORT || 3000;
-// app.listen(port, () => console.log("Server listening on port", port));
-//VERCEL
+
+// For local development
+if (process.env.NODE_ENV !== "production") {
+    app.listen(port, () => console.log(`Server listening on port ${port}`));
+}
+
+// For Vercel serverless
 export default app;
