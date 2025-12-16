@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 // Minimal Gemini API helper.
 // Converts chat-like messages and calls the Gemini API's "generateContent" endpoint.
 
-async function generate({ apiKey, model = "text-bison-001", prompt = [], max_output_tokens = 256, temperature = 0.2 }){
+async function generate({ apiKey, model = "gemini-2.5-flash", prompt = [], max_output_tokens = 256, temperature = 0.2 }){
     if(!apiKey) throw new Error("Gemini API key required");
 
     // For PaLM/text-bison models, use simple text prompt
@@ -14,7 +14,7 @@ async function generate({ apiKey, model = "text-bison-001", prompt = [], max_out
 
     if(isTextModel){
         // PaLM API v1beta2 endpoint for text-bison
-        url = `https://generativeai.googleapis.com/v1/models/${encodeURIComponent(model)}:generateText?key=${encodeURIComponent(apiKey)}`;
+        url = `https://generativeai.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateText?key=${encodeURIComponent(apiKey)}`;
         console.log("[Gemini] Calling PaLM endpoint:", url.replace(apiKey, "***KEY***"));
 
         const promptText = Array.isArray(prompt) ? prompt.map(m => (m.content || "")).join("\n\n") : String(prompt);
