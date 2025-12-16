@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "name": "agenticaibot",
+  "public": true,
   "builds": [
     {
       "src": "index.js",
