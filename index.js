@@ -17,7 +17,7 @@ const agent = new Agent({
     { name: webSearchTool.name, description: webSearchTool.description, run: webSearchTool.run },
     { name: summarizeTool.name, description: summarizeTool.description, run: summarizeTool.run },
     ],
-    openaiConfig: { apiKey: process.env.OPENAI_API_KEY, geminiKey: process.env.GEMINI_API_KEY, model: process.env.GEMINI_MODEL },
+    openaiConfig: { geminiKey: process.env.GEMINI_API_KEY, model: process.env.GEMINI_MODEL },
     maxCycles: 3,  
 });
 
@@ -35,4 +35,6 @@ app.post("/api/agent", async(req,res) => {
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log("Server listening on port", port));
+// app.listen(port, () => console.log("Server listening on port", port));
+//VERCEL
+export default app;
